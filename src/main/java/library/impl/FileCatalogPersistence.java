@@ -15,29 +15,28 @@ import library.models.Book;
 import library.persistence.CatalogPersistence;
 import library.util.textfile;
 
-
 public class FileCatalogPersistence implements CatalogPersistence {
     private final String filePath;
 
     public FileCatalogPersistence() {
-        this("txt files/catalog.txt");                 // If no path - use default file
+        this("txt files/catalog.txt"); // If no path - use default file
     }
 
-    public FileCatalogPersistence(String filePath) {             // change file location later
+    public FileCatalogPersistence(String filePath) { // change file location later
         this.filePath = filePath;
     }
 
     @Override
-    public void saveCatalog(Map<String, List<Book>> catalog) throws Exception {      // WRITE THE FILE
+    public void saveCatalog(Map<String, List<Book>> catalog) throws Exception { // WRITE THE FILE
         File file = new File(filePath);
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-                writer.write(                                    // write column names
-                    "isbn,title,author,genre,publisher,itemType,totalCopies,availableCopies,borrowCount,lastIssueDate,courseType"); 
+            writer.write( // write column names
+                    "isbn,title,author,genre,publisher,itemType,totalCopies,availableCopies,borrowCount,lastIssueDate,courseType");
             writer.newLine();
 
             for (List<Book> bucket : catalog.values()) {
                 for (Book book : bucket) {
-                    writer.write(toCsvLine(book));    // use this to convert to CSV formet
+                    writer.write(toCsvLine(book)); // use this to convert to CSV formet
                     writer.newLine();
                 }
             }
@@ -46,9 +45,9 @@ public class FileCatalogPersistence implements CatalogPersistence {
         }
     }
 
-    @Override 
-    public Map<String, List<Book>> loadCatalog() throws Exception {     // Returns full catalog
-        Map<String, List<Book>> loaded = new HashMap<>();              // Create empty map
+    @Override
+    public Map<String, List<Book>> loadCatalog() throws Exception { // Returns full catalog
+        Map<String, List<Book>> loaded = new HashMap<>(); // Create empty map
         File file = new File(filePath);
 
         if (!file.exists()) {
@@ -56,12 +55,12 @@ public class FileCatalogPersistence implements CatalogPersistence {
         }
 
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-            String line = reader.readLine();               // Skip header
+            String line = reader.readLine(); // Skip header
             if (line == null) {
                 return loaded;
             }
 
-            while ((line = reader.readLine()) != null) {          // Read line-by-line
+            while ((line = reader.readLine()) != null) { // Read line-by-line
                 if (line.trim().isEmpty()) {
                     continue;
                 }
@@ -73,23 +72,23 @@ public class FileCatalogPersistence implements CatalogPersistence {
 
                 Book book;
                 if (parts.length >= 11) {
-                    book = new Book(                // Creating Book Object (Converts text → object)
+                    book = new Book( // Creating Book Object (Converts text → object)
                             parts[0],
                             parts[1],
                             parts[2],
                             parts[3],
                             parts[4],
                             parts[5],
-                            parseIntSafe(parts[6]),        // Prevents crash if invalid
+                            parseIntSafe(parts[6]), // Prevents crash if invalid
                             parseIntSafe(parts[7]),
                             parseIntSafe(parts[8]),
-                            parts.length > 9 ? parts[9] : "");         //if issue date is missing → set to empty string
+                            parts.length > 9 ? parts[9] : ""); // if issue date is missing → set to empty string
                     // set courseType if present
                     if (parts.length > 10) {
                         book.setCourseType(parts[10]);
                     }
-                } 
-                
+                }
+
                 else {
                     book = new Book(
                             parts[0],
@@ -105,7 +104,7 @@ public class FileCatalogPersistence implements CatalogPersistence {
                     // older rows have no courseType → default empty
                 }
 
-                List<Book> bucket = loaded.get(book.getIsbn());        // Insert into HashMap
+                List<Book> bucket = loaded.get(book.getIsbn()); // Insert into HashMap
                 if (bucket == null) {
                     bucket = new ArrayList<>();
                     loaded.put(book.getIsbn(), bucket);
@@ -119,12 +118,12 @@ public class FileCatalogPersistence implements CatalogPersistence {
         return loaded;
     }
 
-    private String toCsvLine(Book book) {                // Converts object → (CSV line format) text file
+    private String toCsvLine(Book book) { // Converts object → (CSV line format) text file
         String itemType = book.getItemType() == null || book.getItemType().trim().isEmpty()
                 ? "Book"
                 : book.getItemType().trim();
-        return String.join(",",     
-                textfile.escape(book.getIsbn()),                //  escape helps to Prevents CSV breaking issue
+        return String.join(",",
+                textfile.escape(book.getIsbn()), // escape helps to Prevents CSV breaking issue
                 textfile.escape(book.getTitle()),
                 textfile.escape(book.getAuthor()),
                 textfile.escape(book.getGenre()),
@@ -133,8 +132,8 @@ public class FileCatalogPersistence implements CatalogPersistence {
                 String.valueOf(book.getTotalCopies()),
                 String.valueOf(book.getAvailableCopies()),
                 String.valueOf(book.getBorrowCount()),
-            textfile.escape(book.getLastIssueDate()),
-            textfile.escape(book.getCourseType() == null ? "" : book.getCourseType()));
+                textfile.escape(book.getLastIssueDate()),
+                textfile.escape(book.getCourseType() == null ? "" : book.getCourseType()));
     }
 
     private String[] parseCsvLine(String line) {

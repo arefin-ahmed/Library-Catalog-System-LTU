@@ -51,7 +51,7 @@ import library.util.textfile;
 
 //    Swing UI for the Library System. window-based application 
 
-public class LibrarySystemGUI extends JFrame {   
+public class LibrarySystemGUI extends JFrame {
     private static final String LOGO_RESOURCE = "/assets/LTU2.png";
     private static final String ITEM_TYPE_BOOK = "Book";
     private static final String ITEM_TYPE_EBOOK = "E-Book";
@@ -229,7 +229,7 @@ public class LibrarySystemGUI extends JFrame {
         JTextField authorInput = new JTextField();
         JComboBox<String> genreInput = new JComboBox<>(GENRE_OPTIONS);
         JComboBox<String> itemTypeInput = new JComboBox<>(
-            new String[] { ITEM_TYPE_BOOK, ITEM_TYPE_EBOOK, ITEM_TYPE_EJOURNAL, ITEM_TYPE_DATABASE });
+                new String[] { ITEM_TYPE_BOOK, ITEM_TYPE_EBOOK, ITEM_TYPE_EJOURNAL, ITEM_TYPE_DATABASE });
         JComboBox<String> courseTypeInput = new JComboBox<>(new String[] { "Course", "Non-Course" });
         JTextField publisherInput = new JTextField();
         JTextField totalCopiesInput = new JTextField();

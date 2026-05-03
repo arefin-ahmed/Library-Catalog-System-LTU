@@ -4,7 +4,7 @@ isbn,title,author,genre,publisher,itemType,totalCopies,availableCopies,borrowCou
 "4012","Journal of Advanced Nursing","Wiley","Nursing","Wiley-Blackwell","e-Journal",999,999,0,""
 "4013","Renewable and Sustainable Energy Reviews","Elsevier","Energy","Elsevier","e-Journal",999,999,0,""
 "4014","Trends in Cognitive Sciences","Cell Press","Psychology","Elsevier","e-Journal",999,999,0,""
-"030","Compiler Design in C","Allen Holub","Computer Science","Prentice Hall","Book",5,5,0,""
+"030","Compiler Design in C","Allen Holub","Computer Science","Prentice Hall","Book",3,3,0,""
 "031","Fluid Mechanics: Fundamentals and Applications","Yunus Cengel","Engineering","McGraw Hill","Book",12,0,0,""
 "032","University Physics","George B. Thomas","Physics","Pearson","Book",15,0,0,""
 "111","Spanish Language Lab Audio CD","Maria Garcia","Language","Pearson","e-Book",10,10,0,""

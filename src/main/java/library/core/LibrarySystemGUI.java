@@ -59,10 +59,10 @@ public class LibrarySystemGUI extends JFrame {
     private static final String ITEM_TYPE_DATABASE = "Database";
 
     private static final int UG_STUDENT_MAX_BOOK_BORROWS = 3;
-    private static final int UG_STUDENT_LOAN_DAYS = 10;
+    // private static final int UG_STUDENT_LOAN_DAYS = 10;
 
     private static final int FACULTY_MAX_BOOK_BORROWS = 10;
-    private static final int FACULTY_LOAN_DAYS = 30;
+    // private static final int FACULTY_LOAN_DAYS = 30;
 
     private static final String[] GENRE_OPTIONS = {
             "Art, Culture and History",
@@ -869,8 +869,7 @@ public class LibrarySystemGUI extends JFrame {
         if (role == null) {
             return false;
         }
-        return "External Visitor".equalsIgnoreCase(role.trim())
-                || "G_Student".equalsIgnoreCase(role.trim());
+        return "External Visitor".equalsIgnoreCase(role.trim());
     }
 
     private void showTopBorrowedBooks() {
@@ -1222,7 +1221,7 @@ public class LibrarySystemGUI extends JFrame {
             if ("UG_Student".equalsIgnoreCase(userType)) {
                 return new UG_Student(savedUsername, savedPassword);
             }
-            if ("External Visitor".equalsIgnoreCase(userType) || "G_Student".equalsIgnoreCase(userType)) {
+            if ("External Visitor".equalsIgnoreCase(userType)) {
                 return new ExternalVisitor(savedUsername, savedPassword);
             }
             return null;

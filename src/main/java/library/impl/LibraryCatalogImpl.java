@@ -20,10 +20,10 @@ public class LibraryCatalogImpl extends AbstractLibraryCatalog {
     private static final String ACTION_ACCESS = "ACCESS";
 
     private static final int UG_STUDENT_MAX_BOOK_BORROWS = 3;
-    private static final int UG_STUDENT_LOAN_DAYS = 10;
+    // private static final int UG_STUDENT_LOAN_DAYS = 10;
 
     private static final int FACULTY_MAX_BOOK_BORROWS = 10;
-    private static final int FACULTY_LOAN_DAYS = 30;
+    // private static final int FACULTY_LOAN_DAYS = 30;
 
     private List<BorrowRecord> borrowHistory;
     private BorrowHistoryPersistenceTXT historyPersistence;
@@ -228,7 +228,7 @@ public class LibraryCatalogImpl extends AbstractLibraryCatalog {
     }
 
     private boolean isExternalVisitorRole(String userRole) {
-        return isRole(userRole, "external visitor") || isRole(userRole, "g_student");
+        return isRole(userRole, "external visitor");
     }
 
     private boolean isFacultyRole(String userRole) {
@@ -279,16 +279,6 @@ public class LibraryCatalogImpl extends AbstractLibraryCatalog {
             return -1;
         }
         return -1;
-    }
-
-    private int getLoanDaysForRole(String userRole) {
-        if (isUGStudentRole(userRole)) {
-            return UG_STUDENT_LOAN_DAYS;
-        }
-        if (isFacultyRole(userRole)) {
-            return FACULTY_LOAN_DAYS;
-        }
-        return 0;
     }
 
     // New loan period rules:

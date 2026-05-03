@@ -31,8 +31,8 @@ public class FileCatalogPersistence implements CatalogPersistence {
     public void saveCatalog(Map<String, List<Book>> catalog) throws Exception {      // WRITE THE FILE
         File file = new File(filePath);
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-            writer.write(                                    // write column names
-                    "isbn,title,author,genre,publisher,itemType,totalCopies,availableCopies,borrowCount,lastIssueDate"); 
+                writer.write(                                    // write column names
+                    "isbn,title,author,genre,publisher,itemType,totalCopies,availableCopies,borrowCount,lastIssueDate,courseType"); 
             writer.newLine();
 
             for (List<Book> bucket : catalog.values()) {
@@ -72,7 +72,7 @@ public class FileCatalogPersistence implements CatalogPersistence {
                 }
 
                 Book book;
-                if (parts.length >= 10) {
+                if (parts.length >= 11) {
                     book = new Book(                // Creating Book Object (Converts text → object)
                             parts[0],
                             parts[1],
@@ -84,6 +84,10 @@ public class FileCatalogPersistence implements CatalogPersistence {
                             parseIntSafe(parts[7]),
                             parseIntSafe(parts[8]),
                             parts.length > 9 ? parts[9] : "");         //if issue date is missing → set to empty string
+                    // set courseType if present
+                    if (parts.length > 10) {
+                        book.setCourseType(parts[10]);
+                    }
                 } 
                 
                 else {
@@ -98,6 +102,7 @@ public class FileCatalogPersistence implements CatalogPersistence {
                             parseIntSafe(parts[6]),
                             parseIntSafe(parts[7]),
                             parts.length > 8 ? parts[8] : "");
+                    // older rows have no courseType → default empty
                 }
 
                 List<Book> bucket = loaded.get(book.getIsbn());        // Insert into HashMap
@@ -128,7 +133,8 @@ public class FileCatalogPersistence implements CatalogPersistence {
                 String.valueOf(book.getTotalCopies()),
                 String.valueOf(book.getAvailableCopies()),
                 String.valueOf(book.getBorrowCount()),
-                textfile.escape(book.getLastIssueDate()));
+            textfile.escape(book.getLastIssueDate()),
+            textfile.escape(book.getCourseType() == null ? "" : book.getCourseType()));
     }
 
     private String[] parseCsvLine(String line) {

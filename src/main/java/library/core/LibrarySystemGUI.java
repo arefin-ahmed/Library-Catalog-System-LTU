@@ -229,7 +229,8 @@ public class LibrarySystemGUI extends JFrame {
         JTextField authorInput = new JTextField();
         JComboBox<String> genreInput = new JComboBox<>(GENRE_OPTIONS);
         JComboBox<String> itemTypeInput = new JComboBox<>(
-                new String[] { ITEM_TYPE_BOOK, ITEM_TYPE_EBOOK, ITEM_TYPE_EJOURNAL, ITEM_TYPE_DATABASE });
+            new String[] { ITEM_TYPE_BOOK, ITEM_TYPE_EBOOK, ITEM_TYPE_EJOURNAL, ITEM_TYPE_DATABASE });
+        JComboBox<String> courseTypeInput = new JComboBox<>(new String[] { "Course", "Non-Course" });
         JTextField publisherInput = new JTextField();
         JTextField totalCopiesInput = new JTextField();
 
@@ -244,6 +245,8 @@ public class LibrarySystemGUI extends JFrame {
         addPanel.add(genreInput);
         addPanel.add(new JLabel("Item Type:"));
         addPanel.add(itemTypeInput);
+        addPanel.add(new JLabel("Course Type:"));
+        addPanel.add(courseTypeInput);
         addPanel.add(new JLabel("Publisher:"));
         addPanel.add(publisherInput);
         addPanel.add(new JLabel("Total Copies:"));
@@ -270,6 +273,7 @@ public class LibrarySystemGUI extends JFrame {
         String itemType = normalizeItemType(String.valueOf(itemTypeInput.getSelectedItem()));
         String publisher = publisherInput.getText().trim();
         String totalCopiesText = totalCopiesInput.getText().trim();
+        String courseType = String.valueOf(courseTypeInput.getSelectedItem()).trim();
 
         if (isbn.isEmpty() || title.isEmpty() || author.isEmpty() || genre.isEmpty() || publisher.isEmpty()
                 || totalCopiesText.isEmpty()) {
@@ -292,6 +296,7 @@ public class LibrarySystemGUI extends JFrame {
         }
 
         Book book = new Book(isbn, title, author, genre, publisher, itemType, totalCopies, totalCopies, 0, "");
+        book.setCourseType(courseType);
         catalog.addBook(book);
         persistChanges();
         showAllBooks();

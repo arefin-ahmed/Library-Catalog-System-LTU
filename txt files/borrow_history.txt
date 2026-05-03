@@ -14,3 +14,7 @@ isbn,bookTitle,borrowerName,userRole,itemType,issueDate,dueDate,action
 "001","Introduction to Algorithms","khan","G_Student","Book","2026-05-02","2026-05-17","BORROW"
 "121","Discrete Math Problem Solver DVD","khan","G_Student","Book-CD","2026-05-02","2026-05-17","BORROW"
 "114","Music Theory Ear Training DVD","khan","G_Student","E-Book","2026-05-03","2026-05-18","BORROW"
+"7031","Becoming","khan","G_Student","Book","2026-05-03","","RETURN"
+"112","Java Programming Resource DVD","khan","G_Student","E-Book","2026-05-03","","RETURN"
+"7012","Deep Work","khan","G_Student","Book","2026-05-03","","RETURN"
+"7033","Crying in H Mart","khan","G_Student","Book","2026-05-03","2026-05-31","BORROW"

@@ -11,6 +11,7 @@ public class Book {
     private int availableCopies;
     private int borrowCount;
     private String lastIssueDate;
+    private String courseType;
 
     public Book() {
     }
@@ -32,6 +33,15 @@ public class Book {
         this.availableCopies = availableCopies;
         this.borrowCount = borrowCount;
         this.lastIssueDate = lastIssueDate;
+        this.courseType = "";
+    }
+
+    public String getCourseType() {
+        return courseType;
+    }
+
+    public void setCourseType(String courseType) {
+        this.courseType = courseType;
     }
 
     public String getIsbn() {

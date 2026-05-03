@@ -11,7 +11,6 @@ import library.persistence.CatalogPersistence;
 
 public class LibraryCatalogImpl extends AbstractLibraryCatalog {
     private static final String ITEM_TYPE_BOOK = "Book";
-    private static final String ITEM_TYPE_BOOK_CD = "Book-CD";
     private static final String ITEM_TYPE_EBOOK = "E-Book";
     private static final String ITEM_TYPE_EJOURNAL = "E-Journal";
     private static final String ITEM_TYPE_DATABASE = "Database";
@@ -21,15 +20,12 @@ public class LibraryCatalogImpl extends AbstractLibraryCatalog {
     private static final String ACTION_ACCESS = "ACCESS";
 
     private static final int UG_STUDENT_MAX_BOOK_BORROWS = 3;
-    private static final int UG_STUDENT_MAX_BOOK_CD_BORROWS = 3;
     private static final int UG_STUDENT_LOAN_DAYS = 10;
 
     private static final int G_STUDENT_MAX_BOOK_BORROWS = 5;
-    private static final int G_STUDENT_MAX_BOOK_CD_BORROWS = 5;
     private static final int G_STUDENT_LOAN_DAYS = 15;
 
     private static final int FACULTY_MAX_BOOK_BORROWS = 10;
-    private static final int FACULTY_MAX_BOOK_CD_BORROWS = 5;
     private static final int FACULTY_LOAN_DAYS = 30;
 
     private List<BorrowRecord> borrowHistory;
@@ -238,10 +234,6 @@ public class LibraryCatalogImpl extends AbstractLibraryCatalog {
         return isRole(userRole, "faculty");
     }
 
-    private boolean isBookCdType(String itemType) {
-        return itemType != null && ITEM_TYPE_BOOK_CD.equalsIgnoreCase(itemType.trim());
-    }
-
     private boolean isEBookType(String itemType) {
         return itemType != null && ITEM_TYPE_EBOOK.equalsIgnoreCase(itemType.trim());
     }
@@ -259,9 +251,7 @@ public class LibraryCatalogImpl extends AbstractLibraryCatalog {
     }
 
     private String normalizeItemType(String itemType) {
-        if (isBookCdType(itemType)) {
-            return ITEM_TYPE_BOOK_CD;
-        }
+        // Default to Book unless other explicit type matches
         if (isEBookType(itemType)) {
             return ITEM_TYPE_EBOOK;
         }
@@ -278,16 +268,14 @@ public class LibraryCatalogImpl extends AbstractLibraryCatalog {
         if (isAccessOnlyType(itemType)) {
             return -1;
         }
-
-        boolean isBookCd = isBookCdType(itemType);
         if (isUGStudentRole(userRole)) {
-            return isBookCd ? UG_STUDENT_MAX_BOOK_CD_BORROWS : UG_STUDENT_MAX_BOOK_BORROWS;
+            return UG_STUDENT_MAX_BOOK_BORROWS;
         }
         if (isGStudentRole(userRole)) {
-            return isBookCd ? G_STUDENT_MAX_BOOK_CD_BORROWS : G_STUDENT_MAX_BOOK_BORROWS;
+            return G_STUDENT_MAX_BOOK_BORROWS;
         }
         if (isFacultyRole(userRole)) {
-            return isBookCd ? FACULTY_MAX_BOOK_CD_BORROWS : FACULTY_MAX_BOOK_BORROWS;
+            return FACULTY_MAX_BOOK_BORROWS;
         }
         return -1;
     }

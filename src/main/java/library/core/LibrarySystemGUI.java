@@ -49,27 +49,22 @@ import library.models.UG_Student;
 import library.models.User;
 import library.util.textfile;
 
-
 //    Swing UI for the Library System.
 
 public class LibrarySystemGUI extends JFrame {
     private static final String LOGO_RESOURCE = "/assets/LTU2.png";
     private static final String ITEM_TYPE_BOOK = "Book";
-    private static final String ITEM_TYPE_BOOK_CD = "Book-CD";
     private static final String ITEM_TYPE_EBOOK = "E-Book";
     private static final String ITEM_TYPE_EJOURNAL = "E-Journal";
     private static final String ITEM_TYPE_DATABASE = "Database";
 
     private static final int UG_STUDENT_MAX_BOOK_BORROWS = 3;
-    private static final int UG_STUDENT_MAX_BOOK_CD_BORROWS = 3;
     private static final int UG_STUDENT_LOAN_DAYS = 10;
 
     private static final int G_STUDENT_MAX_BOOK_BORROWS = 5;
-    private static final int G_STUDENT_MAX_BOOK_CD_BORROWS = 5;
     private static final int G_STUDENT_LOAN_DAYS = 15;
 
     private static final int FACULTY_MAX_BOOK_BORROWS = 10;
-    private static final int FACULTY_MAX_BOOK_CD_BORROWS = 5;
     private static final int FACULTY_LOAN_DAYS = 30;
 
     private static final String[] GENRE_OPTIONS = {
@@ -234,8 +229,7 @@ public class LibrarySystemGUI extends JFrame {
         JTextField authorInput = new JTextField();
         JComboBox<String> genreInput = new JComboBox<>(GENRE_OPTIONS);
         JComboBox<String> itemTypeInput = new JComboBox<>(
-                new String[] { ITEM_TYPE_BOOK, ITEM_TYPE_BOOK_CD, ITEM_TYPE_EBOOK, ITEM_TYPE_EJOURNAL,
-                        ITEM_TYPE_DATABASE });
+                new String[] { ITEM_TYPE_BOOK, ITEM_TYPE_EBOOK, ITEM_TYPE_EJOURNAL, ITEM_TYPE_DATABASE });
         JTextField publisherInput = new JTextField();
         JTextField totalCopiesInput = new JTextField();
 
@@ -775,9 +769,7 @@ public class LibrarySystemGUI extends JFrame {
     }
 
     private String normalizeItemType(String itemType) {
-        if (ITEM_TYPE_BOOK_CD.equalsIgnoreCase(String.valueOf(itemType).trim())) {
-            return ITEM_TYPE_BOOK_CD;
-        }
+        // Only explicit special types are handled; default is Book
         if (ITEM_TYPE_EBOOK.equalsIgnoreCase(String.valueOf(itemType).trim())) {
             return ITEM_TYPE_EBOOK;
         }
@@ -802,15 +794,14 @@ public class LibrarySystemGUI extends JFrame {
         if (isAccessOnlyType(itemType)) {
             return -1;
         }
-        boolean isBookCd = ITEM_TYPE_BOOK_CD.equalsIgnoreCase(itemType);
         if ("UG_Student".equalsIgnoreCase(role)) {
-            return isBookCd ? UG_STUDENT_MAX_BOOK_CD_BORROWS : UG_STUDENT_MAX_BOOK_BORROWS;
+            return UG_STUDENT_MAX_BOOK_BORROWS;
         }
         if ("G_Student".equalsIgnoreCase(role)) {
-            return isBookCd ? G_STUDENT_MAX_BOOK_CD_BORROWS : G_STUDENT_MAX_BOOK_BORROWS;
+            return G_STUDENT_MAX_BOOK_BORROWS;
         }
         if ("Faculty".equalsIgnoreCase(role)) {
-            return isBookCd ? FACULTY_MAX_BOOK_CD_BORROWS : FACULTY_MAX_BOOK_BORROWS;
+            return FACULTY_MAX_BOOK_BORROWS;
         }
         return -1;
     }

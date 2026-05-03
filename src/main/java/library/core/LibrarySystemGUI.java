@@ -49,9 +49,9 @@ import library.models.UG_Student;
 import library.models.User;
 import library.util.textfile;
 
-//    Swing UI for the Library System.
+//    Swing UI for the Library System. window-based application 
 
-public class LibrarySystemGUI extends JFrame {
+public class LibrarySystemGUI extends JFrame {   
     private static final String LOGO_RESOURCE = "/assets/LTU2.png";
     private static final String ITEM_TYPE_BOOK = "Book";
     private static final String ITEM_TYPE_EBOOK = "E-Book";
@@ -817,6 +817,45 @@ public class LibrarySystemGUI extends JFrame {
             return FACULTY_LOAN_DAYS;
         }
         return 0;
+    }
+
+    private int calculateLoanDays(String role, String itemType, String genre) {
+        if (itemType == null) {
+            return 0;
+        }
+        String normalized = normalizeItemType(itemType);
+        if (isAccessOnlyType(normalized)) {
+            return 0;
+        }
+        if (isNonCourseGenre(genre)) {
+            return 28;
+        }
+        if (ITEM_TYPE_BOOK.equalsIgnoreCase(normalized) || ITEM_TYPE_EBOOK.equalsIgnoreCase(normalized)) {
+            return 14;
+        }
+        return 14;
+    }
+
+    private boolean isNonCourseGenre(String genre) {
+        if (genre == null) {
+            return false;
+        }
+        String g = genre.trim().toLowerCase();
+        String[] nonCourse = new String[] {
+                "contemporary fiction",
+                "science fiction",
+                "self-help",
+                "psychological thriller",
+                "history",
+                "fantasy",
+                "memoir"
+        };
+        for (String n : nonCourse) {
+            if (n.equalsIgnoreCase(g)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private String roleLabel(String role) {

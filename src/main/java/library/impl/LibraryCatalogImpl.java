@@ -85,7 +85,7 @@ public class LibraryCatalogImpl extends AbstractLibraryCatalog {
         if (borrowed) {
             LocalDate issue = LocalDate.now();
             String issueDate = issue.toString();
-            int loanDays = getLoanDaysForRole(userRole);
+            int loanDays = calculateLoanDays(userRole, itemType, book.getGenre());
             String dueDate = loanDays > 0 ? issue.plusDays(loanDays).toString() : "";
             book.setLastIssueDate(issueDate);
             recordHistory(book, borrowerName, userRole, itemType, issueDate, dueDate, ACTION_BORROW);
@@ -291,6 +291,55 @@ public class LibraryCatalogImpl extends AbstractLibraryCatalog {
             return FACULTY_LOAN_DAYS;
         }
         return 0;
+    }
+
+    // New loan period rules:
+    // - Books and E-Books: 14 days by default
+    // - Non-course books (specific genres): 28 days
+    private int calculateLoanDays(String userRole, String itemType, String genre) {
+        if (itemType == null) {
+            return 0;
+        }
+        String normalizedType = normalizeItemType(itemType);
+        // Access-only items aren't borrowed
+        if (isAccessOnlyType(normalizedType)) {
+            return 0;
+        }
+
+        // Non-course genres get extended loan period
+        if (isNonCourseGenre(genre)) {
+            return 28;
+        }
+
+        // Default for book-like items
+        if (ITEM_TYPE_BOOK.equalsIgnoreCase(normalizedType) || ITEM_TYPE_EBOOK.equalsIgnoreCase(normalizedType)) {
+            return 14;
+        }
+
+        // Fallback to 14 days
+        return 14;
+    }
+
+    private boolean isNonCourseGenre(String genre) {
+        if (genre == null) {
+            return false;
+        }
+        String g = genre.trim().toLowerCase();
+        String[] nonCourse = new String[] {
+                "contemporary fiction",
+                "science fiction",
+                "self-help",
+                "psychological thriller",
+                "history",
+                "fantasy",
+                "memoir"
+        };
+        for (String n : nonCourse) {
+            if (n.equalsIgnoreCase(g)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean isRole(String userRole, String expectedRole) {

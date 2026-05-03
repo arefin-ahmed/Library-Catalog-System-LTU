@@ -22,9 +22,6 @@ public class LibraryCatalogImpl extends AbstractLibraryCatalog {
     private static final int UG_STUDENT_MAX_BOOK_BORROWS = 3;
     private static final int UG_STUDENT_LOAN_DAYS = 10;
 
-    private static final int G_STUDENT_MAX_BOOK_BORROWS = 5;
-    private static final int G_STUDENT_LOAN_DAYS = 15;
-
     private static final int FACULTY_MAX_BOOK_BORROWS = 10;
     private static final int FACULTY_LOAN_DAYS = 30;
 
@@ -66,6 +63,10 @@ public class LibraryCatalogImpl extends AbstractLibraryCatalog {
         }
 
         String itemType = normalizeItemType(book.getItemType());
+
+        if (isExternalVisitorRole(userRole) && !isAccessOnlyType(itemType) && !isEBookType(itemType)) {
+            return false;
+        }
 
         if (isAccessOnlyType(itemType)) {
             String issueDate = LocalDate.now().toString();
@@ -226,8 +227,8 @@ public class LibraryCatalogImpl extends AbstractLibraryCatalog {
         return isRole(userRole, "ug_student");
     }
 
-    private boolean isGStudentRole(String userRole) {
-        return isRole(userRole, "g_student");
+    private boolean isExternalVisitorRole(String userRole) {
+        return isRole(userRole, "external visitor") || isRole(userRole, "g_student");
     }
 
     private boolean isFacultyRole(String userRole) {
@@ -271,11 +272,11 @@ public class LibraryCatalogImpl extends AbstractLibraryCatalog {
         if (isUGStudentRole(userRole)) {
             return UG_STUDENT_MAX_BOOK_BORROWS;
         }
-        if (isGStudentRole(userRole)) {
-            return G_STUDENT_MAX_BOOK_BORROWS;
-        }
         if (isFacultyRole(userRole)) {
             return FACULTY_MAX_BOOK_BORROWS;
+        }
+        if (isExternalVisitorRole(userRole)) {
+            return -1;
         }
         return -1;
     }
@@ -283,9 +284,6 @@ public class LibraryCatalogImpl extends AbstractLibraryCatalog {
     private int getLoanDaysForRole(String userRole) {
         if (isUGStudentRole(userRole)) {
             return UG_STUDENT_LOAN_DAYS;
-        }
-        if (isGStudentRole(userRole)) {
-            return G_STUDENT_LOAN_DAYS;
         }
         if (isFacultyRole(userRole)) {
             return FACULTY_LOAN_DAYS;

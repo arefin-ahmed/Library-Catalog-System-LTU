@@ -44,7 +44,7 @@ import library.models.AdminUser;
 import library.models.Book;
 import library.models.BorrowRecord;
 import library.models.FacultyUser;
-import library.models.G_Student;
+import library.models.ExternalVisitor;
 import library.models.UG_Student;
 import library.models.User;
 import library.util.textfile;
@@ -60,9 +60,6 @@ public class LibrarySystemGUI extends JFrame {
 
     private static final int UG_STUDENT_MAX_BOOK_BORROWS = 3;
     private static final int UG_STUDENT_LOAN_DAYS = 10;
-
-    private static final int G_STUDENT_MAX_BOOK_BORROWS = 5;
-    private static final int G_STUDENT_LOAN_DAYS = 15;
 
     private static final int FACULTY_MAX_BOOK_BORROWS = 10;
     private static final int FACULTY_LOAN_DAYS = 30;
@@ -314,7 +311,7 @@ public class LibrarySystemGUI extends JFrame {
         JTextField nameInput = new JTextField();
         JTextField usernameInput = new JTextField();
         JTextField departmentInput = new JTextField();
-        JComboBox<String> typeInput = new JComboBox<>(new String[] { "UG_Student", "G_Student", "Faculty" });
+        JComboBox<String> typeInput = new JComboBox<>(new String[] { "UG_Student", "External Visitor", "Faculty" });
         JTextField contactInput = new JTextField();
 
         JPanel addUserPanel = new JPanel(new GridLayout(6, 2, 8, 8));
@@ -326,7 +323,7 @@ public class LibrarySystemGUI extends JFrame {
         addUserPanel.add(usernameInput);
         addUserPanel.add(new JLabel("Department:"));
         addUserPanel.add(departmentInput);
-        addUserPanel.add(new JLabel("UG/G Student/Faculty:"));
+        addUserPanel.add(new JLabel("UG Student/External Visitor/Faculty:"));
         addUserPanel.add(typeInput);
         addUserPanel.add(new JLabel("Contact No:"));
         addUserPanel.add(contactInput);
@@ -605,7 +602,7 @@ public class LibrarySystemGUI extends JFrame {
 
     private void borrowBookForCurrentUser() {
         if (currentUser == null || !currentUser.canBorrowBook()) {
-            JOptionPane.showMessageDialog(this, "Only UG/G Student or Faculty can borrow books.");
+            JOptionPane.showMessageDialog(this, "Only UG Student, External Visitor, or Faculty can borrow items.");
             return;
         }
 
@@ -632,6 +629,11 @@ public class LibrarySystemGUI extends JFrame {
             }
             return;
         }
+        if (isExternalVisitorRole(currentUser.getRole()) && ITEM_TYPE_BOOK.equalsIgnoreCase(itemType)) {
+            JOptionPane.showMessageDialog(this,
+                    "External Visitors can only access E-Book, E-Journal, and Database items.");
+            return;
+        }
         int activeBorrows = catalog.getActiveBorrowCountForUserByType(currentUser.getUsername(), itemType);
         int limit = getBorrowLimitForRoleAndType(currentUser.getRole(), itemType);
         if (limit > 0 && activeBorrows >= limit) {
@@ -645,7 +647,7 @@ public class LibrarySystemGUI extends JFrame {
         if (success) {
             persistChanges();
             showAvailableBooks();
-            int loanDays = getLoanDaysForRole(currentUser.getRole());
+            int loanDays = calculateLoanDays(currentUser.getRole(), itemType, book.getGenre());
             if (loanDays > 0) {
                 String dueDate = LocalDate.now().plusDays(loanDays).toString();
                 JOptionPane.showMessageDialog(this,
@@ -661,7 +663,7 @@ public class LibrarySystemGUI extends JFrame {
 
     private void returnBookForCurrentUser() {
         if (currentUser == null || !currentUser.canBorrowBook()) {
-            JOptionPane.showMessageDialog(this, "Only UG/G Student or Faculty can return books.");
+            JOptionPane.showMessageDialog(this, "Only UG Student, External Visitor, or Faculty can return items.");
             return;
         }
 
@@ -802,26 +804,13 @@ public class LibrarySystemGUI extends JFrame {
         if ("UG_Student".equalsIgnoreCase(role)) {
             return UG_STUDENT_MAX_BOOK_BORROWS;
         }
-        if ("G_Student".equalsIgnoreCase(role)) {
-            return G_STUDENT_MAX_BOOK_BORROWS;
-        }
         if ("Faculty".equalsIgnoreCase(role)) {
             return FACULTY_MAX_BOOK_BORROWS;
         }
+        if (isExternalVisitorRole(role)) {
+            return -1;
+        }
         return -1;
-    }
-
-    private int getLoanDaysForRole(String role) {
-        if ("UG_Student".equalsIgnoreCase(role)) {
-            return UG_STUDENT_LOAN_DAYS;
-        }
-        if ("G_Student".equalsIgnoreCase(role)) {
-            return G_STUDENT_LOAN_DAYS;
-        }
-        if ("Faculty".equalsIgnoreCase(role)) {
-            return FACULTY_LOAN_DAYS;
-        }
-        return 0;
     }
 
     private int calculateLoanDays(String role, String itemType, String genre) {
@@ -867,13 +856,21 @@ public class LibrarySystemGUI extends JFrame {
         if ("UG_Student".equalsIgnoreCase(role)) {
             return "Undergraduate Students";
         }
-        if ("G_Student".equalsIgnoreCase(role)) {
-            return "Graduate Students";
+        if (isExternalVisitorRole(role)) {
+            return "External Visitors";
         }
         if ("Faculty".equalsIgnoreCase(role)) {
             return "Faculty Members";
         }
         return "Users";
+    }
+
+    private boolean isExternalVisitorRole(String role) {
+        if (role == null) {
+            return false;
+        }
+        return "External Visitor".equalsIgnoreCase(role.trim())
+                || "G_Student".equalsIgnoreCase(role.trim());
     }
 
     private void showTopBorrowedBooks() {
@@ -1222,12 +1219,11 @@ public class LibrarySystemGUI extends JFrame {
             if ("Faculty".equalsIgnoreCase(userType)) {
                 return new FacultyUser(savedUsername, savedPassword);
             }
-
             if ("UG_Student".equalsIgnoreCase(userType)) {
                 return new UG_Student(savedUsername, savedPassword);
             }
-            if ("G_Student".equalsIgnoreCase(userType)) {
-                return new G_Student(savedUsername, savedPassword);
+            if ("External Visitor".equalsIgnoreCase(userType) || "G_Student".equalsIgnoreCase(userType)) {
+                return new ExternalVisitor(savedUsername, savedPassword);
             }
             return null;
         }

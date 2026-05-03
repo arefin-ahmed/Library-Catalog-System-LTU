@@ -1,7 +1,7 @@
 studentId,name,username,department,type,contactNo,password
 "s001","Zayan Ahmed","ahmed","CSE","UG_Student","01711223344","ahmed123"
-"s112","Sara Khan","khan","BBA","G_Student","01822334455","khan123"
+"s112","Sara Khan","khan","BBA","External Visitor","01822334455","khan123"
 "s191","Omar Faruq","faruq","EEE","UG_Student","01933445566","faruq123"
 "f424","Mir Siddiq","siddiq","MATH","Faculty","01644556677","siddiq123"
 "f222","Hassan Mansur","mansur","PHY","Faculty","01555667788","mansur123"
-"s212","Fatima Rahman","rahman","ENG","G_Student","01366778899","rahman123"
+"s212","Fatima Rahman","rahman","ENG","External Visitor","01366778899","rahman123"

@@ -20,3 +20,5 @@ isbn,bookTitle,borrowerName,userRole,itemType,issueDate,dueDate,action
 "7033","Crying in H Mart","khan","External Visitor","Book","2026-05-03","2026-05-31","BORROW"
 "7014","Can't Hurt Me","khan","External Visitor","Book","2026-05-03","","RETURN"
 "7033","Crying in H Mart","khan","External Visitor","Book","2026-05-03","2026-05-31","BORROW"
+"120","Financial Accounting Worksheets CD","khan","External Visitor","E-Book","2026-05-03","2026-05-17","BORROW"
+"001","Introduction to Algorithms","khan","External Visitor","Book","2026-05-03","","RETURN"

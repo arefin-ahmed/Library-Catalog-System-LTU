@@ -1,0 +1,16 @@
+library\core\LibrarySystemGUI$1.class
+library\core\Main.class
+library\models\ExternalVisitor.class
+library\impl\BorrowHistoryPersistenceTXT.class
+library\util\textfile.class
+library\core\AbstractLibraryCatalog.class
+library\impl\LibraryCatalogImpl.class
+library\models\UG_Student.class
+library\models\AdminUser.class
+library\models\Book.class
+library\impl\FileCatalogPersistence.class
+library\models\BorrowRecord.class
+library\models\FacultyUser.class
+library\persistence\CatalogPersistence.class
+library\core\LibrarySystemGUI.class
+library\models\User.class
